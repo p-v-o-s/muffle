@@ -1,5 +1,5 @@
 from pylab import *
-from scipy.signal import medfilt
+
 #data processing parameters
 IGNORE_FIRST_SAMPLES = 64    #system taking data but not quite stable
 CO2_PPM_THRESH_LOW  = 200    #data out of this range is assumed to be corrupt
@@ -7,8 +7,7 @@ CO2_PPM_THRESH_HIGH = 5000
 
 #plotting parameters
 FIGSIZE = (16,8)   #inches
-XLIM    = (0,120)  #minutes
-
+XLIM    = (0,60)   #minutes, range of plot
 
 #load and process data
 D = loadtxt("LOGGER99.csv",comments="#", delimiter=",", usecols=(0,2,3,4,5))
