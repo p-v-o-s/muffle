@@ -18,7 +18,7 @@ for i in range(1,CO2_PPM.shape[0]):  #filter out bad sensor values of CO2
     if v < CO2_PPM_THRESH_LOW or v > CO2_PPM_THRESH_HIGH:
         CO2_PPM[i] = CO2_PPM[i-1]    #replace with last value
 
-#plot segment of data
+#plot first segment of data
 x1 = 1000         #around 25 min
 x2 = x1 + 1300    #around 60 min
 
@@ -35,6 +35,24 @@ fig = figure()
 ax = fig.add_subplot(111)
 ax.plot(t2,nH, 'c.-', label = 'norm. RH')
 ax.plot(t2,nC,'k.-', label = 'norm. CO2')
-ax.set_title("Humidity and CO$_2$ Fluctuations During Sleep")
+ax.set_title("Humidity and CO$_2$ Fluctuations During Sleep, Segment 1")
 legend()
-fig.savefig("RH-CO2_fluctuations_during_sleep.png")
+fig.savefig("RH-CO2_fluctuations_during_sleep_seg1.png")
+
+#plot the second segment of data
+H2 = HUMID_RH[x2:]
+C2 = CO2_PPM[x2:]
+t2 = t_min[x2:]
+
+#rescale the data units
+nC = (C2 - C2.mean())/C2.std()
+nH = (H2 - H2.mean())/H2.std()
+
+
+fig = figure()
+ax = fig.add_subplot(111)
+ax.plot(t2,nH, 'c.-', label = 'norm. RH')
+ax.plot(t2,nC,'k.-', label = 'norm. CO2')
+ax.set_title("Humidity and CO$_2$ Fluctuations During Sleep, Segment 2")
+legend()
+fig.savefig("RH-CO2_fluctuations_during_sleep_seg2.png")
