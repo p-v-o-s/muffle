@@ -1,18 +1,9 @@
 /*******************Demo for MG-811 Gas Sensor Module V1.1*****************************
-Author:  Tiequan Shao: tiequan.shao@sandboxelectronics.com
-         Peng Wei:     peng.wei@sandboxelectronics.com
-          
-Lisence: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
- 
-Note:    This piece of source code is supposed to be used as a demostration ONLY. More
-         sophisticated calibration is required for industrial field application.
-          
-                                                    Sandbox Electronics    2012-05-31
+
 ************************************************************************************/
  
 /************************Hardware Related Macros************************************/
-#define         MG_PIN                       (0)     //define which analog input channel you are going to use
-#define         BOOL_PIN                     (2)
+#define         MG_PIN                       (0)         //define which analog input channel you are going to use
 #define         DC_GAIN                      (8.5/2.0)   //define the DC gain of amplifier
 #define         ADC_VOLTAGE_REF              (3.3)
  
@@ -38,10 +29,7 @@ float           CO2Curve[3]  =  {2.602,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.6
 void setup()
 {
     Serial.begin(9600);                              //UART setup, baudrate = 9600bps
-    pinMode(BOOL_PIN, INPUT);                        //set pin to input
-    digitalWrite(BOOL_PIN, HIGH);                    //turn on pullup resistors
- 
-   Serial.print("MG-811 Demostration\n");               
+    //Serial.print("MG-811 Demostration\n");
 }
  
 void loop()
@@ -51,33 +39,14 @@ void loop()
      
     
     volts = MGRead(MG_PIN);
-    Serial.print( "SEN0159:" );
-    Serial.print(1e3*volts);
-    Serial.print( "mV           " );
-     
     percentage = MGGetPercentage(volts,CO2Curve);
-    Serial.print("CO2:");
-//    if (percentage == -1) {
-//        Serial.print( "<400" );
-//    } else {
-        Serial.print(percentage);
-//    }
-    Serial.print( "ppm" ); 
-    Serial.print( "       Time point:" );
     Serial.print(millis());
+    Serial.print(",");
+    Serial.print(volts,7);
+    Serial.print(",");
+    Serial.print(percentage,7);
     Serial.print("\n");
-    
-    //ln(PPM) = -0.0543 * (mV - 336) + 5.29831737
-     
-    if (digitalRead(BOOL_PIN) ){
-        Serial.print( "=====BOOL is HIGH======" );
-    } else {
-        Serial.print( "=====BOOL is LOW======" );
-    }
-       
-    Serial.print("\n");
-     
-    delay(200);
+    delay(1000);
 }
  
  
@@ -96,7 +65,8 @@ float MGRead(int mg_pin)
         v += analogRead(mg_pin);
         delay(READ_SAMPLE_INTERVAL);
     }
-    v = (v/READ_SAMPLE_TIMES) *ADC_VOLTAGE_REF/1024 ;
+    v = (v/READ_SAMPLE_TIMES) *ADC_VOLTAGE_REF/1024;
+    v /= DC_GAIN;
     return v; 
 }
  
@@ -114,8 +84,7 @@ double  MGGetPercentage(float volts, float *pcurve)
 //   if ((volts/DC_GAIN )>=ZERO_POINT_VOLTAGE) {
 //      return -1;
 //   } else {
-      float  x = ((volts/DC_GAIN)-pcurve[1])/pcurve[2]+pcurve[0];
-      //float x = -0.0543 * (1e3*volts/DC_GAIN - 336) + 5.29831737;
+      float  x = (volts-pcurve[1])/pcurve[2]+pcurve[0];
       return pow(10.0, x);
 //   }
 }
