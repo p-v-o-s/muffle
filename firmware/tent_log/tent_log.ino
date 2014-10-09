@@ -5,11 +5,11 @@
 #include <RTClib.h>
 #include <RTC_DS3231.h>
 #include <SHT2x.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <SoftwareSerial.h>
 
 
-#define led 6 //indicator led
+#define led 16 //indicator led
 
 
 #define debug 1 //whether or not to print statements out on serial
@@ -17,7 +17,7 @@
 //sleeping
 //ISR(WDT_vect) { Sleepy::watchdogEvent(); }
 #define LOG_INTERVAL_BASE  1000 // in millisec -- 60000 (60 sec) max 
-#define LOG_INTERVAL_REPEAT 5 // number of times to repeat BASE
+#define LOG_INTERVAL_REPEAT 10 // number of times to repeat BASE
 
 //battery
 #define BATTERYPIN A3
@@ -32,10 +32,10 @@ int sensorPower = 4;
 
 char filename[] = "LOGGER00.csv";
 File dataFile;
-String fileHeader = "#DATETIME,RTC_TEMP_C,TEMP_C,HUMID_RH,CO2_PPM,BATTERY_LEVEL";
+String fileHeader = "#DATETIME,RTC_TEMP_C,TEMP_C,HUMID_RH,CO2_PPM";
 
 //variables for MHZ14 CO2 sensor
-SoftwareSerial mhz14Serial(14, 15); // RX, TX
+SoftwareSerial mhz14Serial(6, 8); // RX, TX
 const byte mhz14_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
 
 
@@ -267,16 +267,15 @@ void loop()
   
 // go to sleep!
    
-     if (debug==0) {
-       for (int k=0;k<LOG_INTERVAL_REPEAT;k++) {
-    Sleepy::loseSomeTime(LOG_INTERVAL_BASE); //-- will interfere with serial, so don't use when debugging 
-       }
+  if (debug==0) {
+    for (int k=0;k<LOG_INTERVAL_REPEAT;k++) {
+      Sleepy::loseSomeTime(LOG_INTERVAL_BASE); //-- will interfere with serial, so don't use when debugging 
+    }
   } else {
-    delay (LOG_INTERVAL_BASE); // use when debugging -- loseSomeTime does goofy things w/ serial
+      for (int k=0;k<LOG_INTERVAL_REPEAT;k++) {
+        delay (LOG_INTERVAL_BASE); // use when debugging -- loseSomeTime does goofy things w/ serial
+      }
   }
-  
-   
-  
 }
   
 String padInt(int x, int pad) {
