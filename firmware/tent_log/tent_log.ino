@@ -310,3 +310,5 @@ String int2string(int x) {
   
   return str;
 }
+
+ISR(WDT_vect) { Sleepy::watchdogEvent(); }
