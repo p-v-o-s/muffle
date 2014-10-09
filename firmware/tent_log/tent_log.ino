@@ -12,7 +12,7 @@
 #define led 16 //indicator led
 
 
-#define debug 1 //whether or not to print statements out on serial
+#define debug 0 //whether or not to print statements out on serial
 
 //sleeping
 //ISR(WDT_vect) { Sleepy::watchdogEvent(); }
@@ -164,24 +164,22 @@ void setup()
   mhz14Serial.setTimeout(2000);
   //show that we're working
   if (debug==0) {
-  for (int j=0;j<4;j++) {
-  digitalWrite(led, LOW);
-  delay(1000);
-  digitalWrite(led, HIGH);
-   delay(1000);
-  }
+    for (int j=0;j<4;j++) {
+      digitalWrite(led, LOW);
+      delay(1000);
+      digitalWrite(led, HIGH);
+      delay(1000);
+    }
   
    for (int j=0;j<3;j++) {
-  digitalWrite(led, LOW);
-  delay(500);
-  digitalWrite(led, HIGH);
-   delay(500);
-  }
-  
+     digitalWrite(led, LOW);
+     delay(500);
+     digitalWrite(led, HIGH);
+     delay(500);
+   }
    digitalWrite(led, LOW);
    delay(1000);    
-  }    
-      
+  }     
 }
 
 void loop()
@@ -252,7 +250,7 @@ void loop()
     while (1) ;
   }
   
-   digitalWrite(led, HIGH);
+  digitalWrite(led, HIGH);
   delay(30);
   
   // Write the string to the card
